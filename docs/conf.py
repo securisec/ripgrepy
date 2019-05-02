@@ -21,6 +21,7 @@ project = 'ripgrepy'
 copyright = '2019, Hapsida'
 author = 'Hapsida'
 
+master_doc = 'index'
 
 # -- General configuration ---------------------------------------------------
 
