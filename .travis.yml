@@ -1,0 +1,24 @@
+language: python
+python: 3.7
+dist: xenial
+sudo: true
+before_install:
+- wget https://github.com/BurntSushi/ripgrep/releases/download/11.0.1/ripgrep_11.0.1_amd64.deb
+- sudo dpkg -i ripgrep_11.0.1_amd64.deb
+install:
+- pip -v install .
+script:
+  - python ./tests/test.py
+deploy:
+  provider: pypi
+  user: securisec
+  password:
+    secure: gwgJ4yKQCXK8kBg2xitt+2mGZvWzGYbVej3LrIR7GU184vcgzweVAQYvsAqMkKnsuPGntbvaY6d1Gl+2eOwX/mgIohy+lcMrv8JoFyy//1e1ro4HhXKRpSDrHaw5GiHWwc+KMihdNMu22fa39yKyOKMA7eG/HnjxdsNk8uIdE//O5khm9z2UwAGZTDkwkbyGcJ1GoXLUx4slxfROvXepdl5Y234ptrny5Alac78E+QXMLa5NIisGaDhDGRj0u1p30YTeNzxVilS+fP+3vPbjZidNr9mPedKHfTMAwsUwLUsKrHJbJC6t/n40NnQc33VmUFIddhfsjJiT7xgGyAsmmJWtkLuC1c/v1QXq5GyGrB0rCuR3Tw1gxyZB4y4vjPS+VKTRKl1IhtchDfMeWOYD1+oK37AXLPTbtNfR2LC2nvLDrU3WgCEqZiFA0IW0QwHlzqSJ7Ze+akSYyrHRhjPQM1jwSPjjgrwFzSpdOsbaaesIpv0VOf8PKJJDMaIowd1iyY4jNAWTRuBeGUvL7/xg1/PqYByCwSOzb/qkQCBOXHDU9Gt0IO+u9B4a+CK4IRtZXULsZdgnH6Y0pbTR4vkJlr7PwVLfgBXmehKM1xaxEu9LVXbg8uyzvtv9B5/dhekAbIcpZJXs40hHv4ZqRa+riqtwlphwUd8sNo4iZTuR+bM=
+  on:
+    tags: true
+    repo: securisec/ripgrepy
+  skip_existing: true
+  skip_cleanup: true
+notifications:
+  slack:
+    secure: h+vFOVGNao1yRCc5LtdAOHyhZRyc8Kt7UBDXqpodEeAWWTzb+2DKIxG6pF65IVMVUgN63+lyrCwv0pivmNIGWdP3VG5UwbPhVrAyS4HtOY5f71IGDumnAtw/acX7Pu7mVUXMcufJv2/cBbB+oz4PWootnkk6UOcEFnTfrag7jBDpPlJgF2XPFL7TiuV3LCDJPkRp8keuU5kBWb4uJMq5ZQJC2BqUmFMQjgcy66PZzeEGskXgf1ry7XHDQ25NM3qiyurf8wqLNVOY7cru/A7OgFFzZ8H8eDVNP+5NJp8RAkBkxkEChtEHeWDq6u89LUpEX40O2xQDskjVMwjepeCcXCDRmj3gC9ftXKUCludcXAXohkKjCdcJMgzSSQMPkhlyRs8SX29NKWz7HHhV3MVZOgXoVwclRcxduccD8IbhSNtHjdPk/qEvPPOOVsiiQimdzyrFT6ET9/51QVttePyM5LrUS3k8SZWQ0B6OI+Yj+BqcltevmAy+MD7J9K5XDRHNpXR9yBb2YajrBNJnOlHyoM/PU6tJ3bZgyqiRBIGDjK5THeBS8N7qP8JhwEsYZKXvVoix43t4hyHsW35Yb4ilbgl1pp8j+my3Y+TTbBFfUt4w54RGPbqq31AjrOEi9AwfCkE0qQC1C4Q8NEeOMP/O3uYy9tb3kSaiPMRO7St6jnI=
