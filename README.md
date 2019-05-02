@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.com/securisec/ripgrepy.svg?branch=master)](https://travis-ci.com/securisec/ripgrepy)
 [![Documentation](https://img.shields.io/badge/docs-latest-brightgreen.svg)](http://ripgrepy.readthedocs.io/en/latest/)
 
 # ripgrepy
@@ -25,13 +26,16 @@ To instantiate the class, use:
 ```
 from ripgrepy import Ripgrepy
 # The Ripgrepy class takes two arguments. The regex to search for and the folder path to search in
+
 rg = Ripgrepy('he[l]{2}o', '/some/path/to/files')
 ```
 
 The syntax for ripgrepy is simliar to that of ripgrep itself. 
 ```
 rg.with_filename().line_number()...run().as_string()
+
 # the same can be executed using the rg shorthands
+
 rg.H().n().run().as_string()
 ```
 The above is eqivalent to running 
