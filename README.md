@@ -1,5 +1,9 @@
 [![Build Status](https://travis-ci.com/securisec/ripgrepy.svg?branch=master)](https://travis-ci.com/securisec/ripgrepy)
 [![Documentation](https://img.shields.io/badge/docs-latest-brightgreen.svg)](http://ripgrepy.readthedocs.io/en/latest/)
+[![PyPI](https://img.shields.io/pypi/v/ripgrepy.svg?logo=python&color=blue)](https://pypi.org/project/ripgrepy/)
+
+
+<img src="https://github.com/securisec/ripgrepy/blob/master/logo.png" width="150px">
 
 # ripgrepy
 
@@ -32,11 +36,11 @@ rg = Ripgrepy('he[l]{2}o', '/some/path/to/files')
 
 The syntax for ripgrepy is simliar to that of ripgrep itself. 
 ```
-rg.with_filename().line_number()...run().as_string()
+rg.with_filename().line_number()...run().as_string
 
 # the same can be executed using the rg shorthands
 
-rg.H().n().run().as_string()
+rg.H().n().run().as_string
 ```
 The above is eqivalent to running 
 ```
@@ -45,7 +49,7 @@ rg --with-filename --line-number "he[l]{2}o" /path/to/some/files
 **Important** `run()` should always be the last method that is being run followed by one of the output methods. If ripgrep options are placed after run, they will not be part of the command being executed. Refer to [Readthedocs](http://ripgrepy.readthedocs.io/en/latest/) for complete documentation. The docs are obtained from ripgreps man pages itself.
 
 #### Output methods
-Output can be obtained using the following three methods
+Output can be obtained using the following three properties
 - `as_dict`
 - `as_json`
 - `as_string`

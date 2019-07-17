@@ -34,6 +34,75 @@ class RipGrepNotFound(Exception):
     pass
 
 
+class RipGrepOut(object):
+    def __init__(self, _output, command):
+        self._output = _output
+        self.command = command
+
+    @property
+    @_logger
+    def as_dict(self) -> list:
+        """
+        Returns an array of objects with the match. The objects include 
+        file path, line number and matched value. This is in addition to the 
+        --json that can be passed to ripgrep and is designed for simple ripgrep use
+
+        :return: Array of matched objects
+        :rtype: list
+
+        The following is an example of the dict output.
+        >>> [{'data': {'absolute_offset': 12,
+        >>>   'line_number': 3,
+        >>>   'lines': {'text': 'teststring\\n'},
+        >>>   'path': {'text': '/tmp/test/test.lol'},
+        >>>   'submatches': [{'end': 4, 'match': {'text': 'test'}, 'start': 0}]},
+        >>> 'type': 'match'}]
+        """
+        if '--json' not in self.command:
+            raise TypeError('To use as_dict, use the json() method')
+        out = self._output.splitlines()
+        holder = []
+        for line in out:
+            data = loads(line)
+            if data['type'] == 'match':
+                holder.append(data)
+        return holder
+
+    @property
+    @_logger
+    def as_json(self) -> str:
+        """
+        Returns the output as a JSON object. This is in addition to the 
+        --json that can be passed to ripgrep and is designed for simple ripgrep use
+
+        :return: JSON object
+        :rtype: str
+        """
+        if '--json' not in self.command:
+            raise TypeError('To use as_dict, use the json() method')
+        out = self._output.splitlines()
+        holder = []
+        for line in out:
+            data = loads(line)
+            if data['type'] == 'match':
+                holder.append(data)
+        return dumps(holder)
+
+    @property
+    @_logger
+    def as_string(self) -> str:
+        """
+        Returns stdout from ripgrep
+
+        :return: Stdout of ripgrep
+        :rtype: str
+        """
+        return self._output
+
+    def __repr__(self):
+        return str(self._output)
+
+
 class Ripgrepy(object):
     """
     The main class for Ripgrepy.
@@ -129,6 +198,8 @@ class Ripgrepy(object):
         self.H = self.with_filename
         #: Short syntax for word_regexp
         self.w = self.word_regexp
+        #: Alias to run
+        self.run_rg = self.run
 
     @_logger
     def run(self) -> Ripgrepy:
@@ -142,64 +213,7 @@ class Ripgrepy(object):
         self.command.append(self.path)
         self.command = ' '.join(self.command)
         self._output = getoutput(self.command)
-        return self
-
-    @_logger
-    def as_dict(self) -> list:
-        """
-        Returns an array of objects with the match. The objects include 
-        file path, line number and matched value. This is in addition to the 
-        --json that can be passed to ripgrep and is designed for simple ripgrep use
-
-        :return: Array of matched objects
-        :rtype: list
-
-        The following is an example of the dict output.
-        >>> [{'data': {'absolute_offset': 12,
-        >>>   'line_number': 3,
-        >>>   'lines': {'text': 'teststring\\n'},
-        >>>   'path': {'text': '/tmp/test/test.lol'},
-        >>>   'submatches': [{'end': 4, 'match': {'text': 'test'}, 'start': 0}]},
-        >>> 'type': 'match'}]
-        """
-        if '--json' not in self.command:
-            raise TypeError('To use as_dict, use the json() method')
-        out = self._output.splitlines()
-        holder = []
-        for line in out:
-            data = loads(line)
-            if data['type'] == 'match':
-                holder.append(data)
-        return holder
-
-    @_logger
-    def as_json(self) -> str:
-        """
-        Returns the output as a JSON object. This is in addition to the 
-        --json that can be passed to ripgrep and is designed for simple ripgrep use
-
-        :return: JSON object
-        :rtype: str
-        """
-        if '--json' not in self.command:
-            raise TypeError('To use as_dict, use the json() method')
-        out = self._output.splitlines()
-        holder = []
-        for line in out:
-            data = loads(line)
-            if data['type'] == 'match':
-                holder.append(data)
-        return dumps(holder)
-
-    @_logger
-    def as_string(self) -> str:
-        """
-        Returns stdout from ripgrep
-
-        :return: Stdout of ripgrep
-        :rtype: str
-        """
-        return self._output
+        return RipGrepOut(self._output, self.command)
 
     @_logger
     def error_msg(self) -> Ripgrepy:
@@ -298,29 +312,6 @@ class Ripgrepy(object):
         -a/--text flag.
         """
         self.command.append('--binary')
-        return self
-
-    @_logger
-    def pcre2(self) -> Ripgrepy:
-        """
-        When this flag is present, ripgrep will use the PCRE2 regex engine
-        instead of its default regex engine.
-
-        This is generally useful when you want to use features such as
-        look-around or backreferences.
-
-        Note that PCRE2 is an optional ripgrep feature. If PCRE2 wasn't
-        included in your build of ripgrep, then using this flag will result
-        in ripgrep printing an error message and exiting.
-
-        Related flags: --no-pcre2-unicode
-
-        This flag can be disabled with --no-pcre2.
-
-        :return: self
-        :rtype: Ripgrepy
-        """
-        self.command.append('--pcre2')
         return self
 
     @_logger
