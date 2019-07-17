@@ -51,6 +51,7 @@ class RipGrepOut(object):
         :rtype: list
 
         The following is an example of the dict output.
+        
         >>> [{'data': {'absolute_offset': 12,
         >>>   'line_number': 3,
         >>>   'lines': {'text': 'teststring\\n'},

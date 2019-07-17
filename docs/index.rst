@@ -8,6 +8,9 @@ Welcome to ripgrepy's documentation!
 
     .. automethod:: __init__
 
+.. autoclass:: ripgrepy.RipGrepOut
+    :members:
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
