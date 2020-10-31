@@ -874,7 +874,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--max-count')
+        self.command.append(f'--max-count {num}')
         return self
 
     @_logger
