@@ -14,6 +14,11 @@ setup(
     name="ripgrepy",
     version=__version__,
     author=__author__,
+    url='https://github.com/securisec/ripgrepy',
+    project_urls={
+        'Documentation': 'https://ripgrepy.readthedocs.io/',
+        'CI': 'https://travis-ci.com/github/securisec/ripgrepy',
+    },
     packages=find_packages(),
     install_requires = [
     ],
