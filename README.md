@@ -3,7 +3,7 @@
 [![PyPI](https://img.shields.io/pypi/v/ripgrepy.svg?logo=python&color=blue)](https://pypi.org/project/ripgrepy/)
 
 
-<img src="https://github.com/securisec/ripgrepy/blob/master/logo.png" width="150px">
+<img src="https://raw.githubusercontent.com/securisec/ripgrepy/master/logo.png" width="150px">
 
 # ripgrepy
 
