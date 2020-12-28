@@ -566,7 +566,7 @@ class Ripgrepy(object):
         return self
 
     @_logger
-    def files_without_matches(self) -> Ripgrepy:
+    def files_without_match(self) -> Ripgrepy:
         """
         Only print the paths that contain zero matches. This
         inverts/negates the --files-with-matches flag.
@@ -576,7 +576,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--files-without-matches')
+        self.command.append('--files-without-match')
         return self
 
     @_logger
