@@ -203,12 +203,12 @@ class Ripgrepy(object):
         self.run_rg = self.run
 
     @_logger
-    def run(self) -> Ripgrepy:
+    def run(self) -> RipgrepOut:
         """
         Returns an instace of the Ripgrepy object
 
         :return: self
-        :rtype: Ripgrepy
+        :rtype: RipgrepOut
         """
         self.command.append(self.regex_pattern)
         self.command.append(self.path)
