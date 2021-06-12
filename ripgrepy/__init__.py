@@ -1958,11 +1958,13 @@ class RipgrepyYield(Ripgrepy):
             raise TypeError('To use as_dict, use the json() method')
         # Create a generator to return dicts
         for line in self.run():
-        
-            json_value = line.strip().decode()
-            data = loads(json_value)
-            if data['type'] == 'match':
-                yield data
+            try:
+                json_value = line.strip().decode()
+                data = loads(json_value)
+                if data['type'] == 'match':
+                    yield data
+            except ValueError as err:
+                print(err)
 
     @property
     @_logger
@@ -1976,12 +1978,16 @@ class RipgrepyYield(Ripgrepy):
         """
         if '--json' not in self.command:
             raise TypeError('To use as_dict, use the json() method')
+        
         # Create generator to return json values
         for line in self.run():
-            json_value = line.strip().decode()
-            data = loads(json_value)
-            if data['type'] == 'match':
-                yield data
+            try:
+                json_value = line.strip().decode()
+                data = loads(json_value)
+                if data['type'] == 'match':
+                    yield data
+            except ValueError as err:
+                print(err)
 
     @property
     @_logger
