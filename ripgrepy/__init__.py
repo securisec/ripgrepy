@@ -1,7 +1,7 @@
 from __future__ import annotations
 import os
 from shutil import which
-from subprocess import getoutput
+from subprocess import getoutput, Popen, PIPE, STDOUT
 from json import dumps, loads
 from functools import wraps
 from timeit import default_timer
@@ -1890,3 +1890,107 @@ class Ripgrepy(object):
         """
         self.command.append('--word-regexp')
         return self
+    
+class RipgrepyYield(Ripgrepy):
+    def __init__(self, regex_pattern: str, path: str, rg_path: str='rg'):
+        self.cancel_search = False
+        super().__init__(regex_pattern, path, rg_path)
+        
+    @_logger
+    def start(self):
+        """
+        Prepares the completed command.
+        Used instead of the run() method in a Ripgrepy object
+
+        Returns an instace of the Ripgrepy object
+
+        :return: self
+        :rtype: RipgrepyYield
+        """
+        
+        # Assemble the command
+        self.command.append(self.regex_pattern)
+        self.command.append(self.path)
+        self.command = ' '.join(self.command)
+        
+        return self
+        
+    @_logger
+    def run(self):
+        """
+        Runs the command, yielding values as they are found
+        """
+        self.process = Popen(self.command, stdout = PIPE, 
+                        stderr = STDOUT, shell = True)
+        while not self.cancel_search:
+            # Read the next line from the output
+            line = self.process.stdout.readline()
+            
+            subprocess_still_running = (self.process.poll() == None)
+            
+            # Only return line if not empty
+            if line:
+                yield line
+            
+            # Break if process in not alive AND there is no output
+            elif not subprocess_still_running:
+                break
+    
+    @_logger
+    def stop(self):
+        """ Terminate the ongoing search """
+        self.process.kill()
+        self.cancel_search = True
+
+
+    @property
+    @_logger
+    def as_dict(self):
+        """
+        Yield the results in dict format. This is in addition to the 
+        --json that can be passed to ripgrep and is designed for simple ripgrep use
+
+        :return: dict object
+        :rtype: str
+        """
+        
+        if '--json' not in self.command:
+            raise TypeError('To use as_dict, use the json() method')
+        # Create a generator to return dicts
+        for line in self.run():
+        
+            json_value = line.strip().decode()
+            data = loads(json_value)
+            if data['type'] == 'match':
+                yield data
+
+    @property
+    @_logger
+    def as_json(self):
+        """
+        Returns the output as a JSON object. This is in addition to the 
+        --json that can be passed to ripgrep and is designed for simple ripgrep use
+
+        :return: JSON object
+        :rtype: str
+        """
+        if '--json' not in self.command:
+            raise TypeError('To use as_dict, use the json() method')
+        # Create generator to return json values
+        for line in self.run():
+            json_value = line.strip().decode()
+            data = loads(json_value)
+            if data['type'] == 'match':
+                yield data
+
+    @property
+    @_logger
+    def as_string(self):
+        """
+        Returns stdout from ripgrep
+
+        :return: Stdout of ripgrep
+        :rtype: str
+        """
+        for line in self.run():
+            yield line
