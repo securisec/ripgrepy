@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 from os import path
 
-__version__ = '1.0.3'
+__version__ = '1.1.0'
 __author__ = 'Hapsida @securisec'
 
 this_directory = path.abspath(path.dirname(__file__))

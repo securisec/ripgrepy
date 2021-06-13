@@ -8,25 +8,27 @@ from timeit import default_timer
 from pkg_resources import get_distribution
 import logging
 
-__version__ = get_distribution('ripgrepy').version
+__version__ = get_distribution("ripgrepy").version
 
 
 def _logger(func):
     """
     Logger decorator
     """
+
     @wraps(func)
     def l(*args, **kwargs):
         try:
             start = default_timer()
             o = func(*args, **kwargs)
             end = default_timer()
-            rt = str(round(end - start, 4)) + ' seconds'
-            logging.debug(f'{func.__name__} runtime {rt}')
+            rt = str(round(end - start, 4)) + " seconds"
+            logging.debug(f"{func.__name__} runtime {rt}")
             return o
         except:
-            logging.exception('')
+            logging.exception("")
             raise
+
     return l
 
 
@@ -43,15 +45,15 @@ class RipGrepOut(object):
     @_logger
     def as_dict(self) -> list:
         """
-        Returns an array of objects with the match. The objects include 
-        file path, line number and matched value. This is in addition to the 
+        Returns an array of objects with the match. The objects include
+        file path, line number and matched value. This is in addition to the
         --json that can be passed to ripgrep and is designed for simple ripgrep use
 
         :return: Array of matched objects
         :rtype: list
 
         The following is an example of the dict output.
-        
+
         >>> [{'data': {'absolute_offset': 12,
         >>>   'line_number': 3,
         >>>   'lines': {'text': 'teststring\\n'},
@@ -59,13 +61,13 @@ class RipGrepOut(object):
         >>>   'submatches': [{'end': 4, 'match': {'text': 'test'}, 'start': 0}]},
         >>> 'type': 'match'}]
         """
-        if '--json' not in self.command:
-            raise TypeError('To use as_dict, use the json() method')
+        if "--json" not in self.command:
+            raise TypeError("To use as_dict, use the json() method")
         out = self._output.splitlines()
         holder = []
         for line in out:
             data = loads(line)
-            if data['type'] == 'match':
+            if data["type"] == "match":
                 holder.append(data)
         return holder
 
@@ -73,19 +75,19 @@ class RipGrepOut(object):
     @_logger
     def as_json(self) -> str:
         """
-        Returns the output as a JSON object. This is in addition to the 
+        Returns the output as a JSON object. This is in addition to the
         --json that can be passed to ripgrep and is designed for simple ripgrep use
 
         :return: JSON object
         :rtype: str
         """
-        if '--json' not in self.command:
-            raise TypeError('To use as_dict, use the json() method')
+        if "--json" not in self.command:
+            raise TypeError("To use as_dict, use the json() method")
         out = self._output.splitlines()
         holder = []
         for line in out:
             data = loads(line)
-            if data['type'] == 'match':
+            if data["type"] == "match":
                 holder.append(data)
         return dumps(holder)
 
@@ -119,7 +121,7 @@ class Ripgrepy(object):
     :raises RipGrepNotFound: Error if path to ripgrep could not be resolved
     """
 
-    def __init__(self, regex_pattern: str, path: str, rg_path: str='rg'):
+    def __init__(self, regex_pattern: str, path: str, rg_path: str = "rg"):
         self.regex_pattern = f'"{regex_pattern}"'
         self.path = os.path.expanduser(path)
         self._output = None
@@ -128,7 +130,7 @@ class Ripgrepy(object):
         self.command = [self._rg_path]
 
         if which(self._rg_path) is None:
-            raise RipGrepNotFound('ripgrep not found')
+            raise RipGrepNotFound("ripgrep not found")
 
         # short syntax mapping
         #: Short syntax for byte_offset
@@ -212,7 +214,7 @@ class Ripgrepy(object):
         """
         self.command.append(self.regex_pattern)
         self.command.append(self.path)
-        self.command = ' '.join(self.command)
+        self.command = " ".join(self.command)
         self._output = getoutput(self.command)
         return RipGrepOut(self._output, self.command)
 
@@ -238,7 +240,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append(f'--after-context {number}')
+        self.command.append(f"--after-context {number}")
         return self
 
     @_logger
@@ -253,7 +255,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append(f'--before-context {number}')
+        self.command.append(f"--before-context {number}")
         return self
 
     @_logger
@@ -272,7 +274,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append(f'--context {number}')
+        self.command.append(f"--context {number}")
         return self
 
     @_logger
@@ -312,7 +314,7 @@ class Ripgrepy(object):
         This flag can be disabled with --no-binary. It overrides the
         -a/--text flag.
         """
-        self.command.append('--binary')
+        self.command.append("--binary")
         return self
 
     @_logger
@@ -350,7 +352,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--auto-hybrid-regex')
+        self.command.append("--auto-hybrid-regex")
         return self
 
     @_logger
@@ -373,7 +375,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--block-buffered')
+        self.command.append("--block-buffered")
         return self
 
     @_logger
@@ -392,7 +394,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--byte-offset')
+        self.command.append("--byte-offset")
         return self
 
     @_logger
@@ -405,7 +407,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--case-sensitive')
+        self.command.append("--case-sensitive")
         return self
 
     @_logger
@@ -428,7 +430,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--count-matches')
+        self.command.append("--count-matches")
         return self
 
     @_logger
@@ -449,7 +451,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--crlf')
+        self.command.append("--crlf")
         return self
 
     @_logger
@@ -468,7 +470,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--debug')
+        self.command.append("--debug")
         return self
 
     @_logger
@@ -549,7 +551,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--files')
+        self.command.append("--files")
         return self
 
     @_logger
@@ -562,7 +564,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--files-with-matches')
+        self.command.append("--files-with-matches")
         return self
 
     @_logger
@@ -576,7 +578,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--files-without-match')
+        self.command.append("--files-without-match")
         return self
 
     @_logger
@@ -591,7 +593,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--fixed-strings')
+        self.command.append("--fixed-strings")
         return self
 
     @_logger
@@ -607,7 +609,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--follow')
+        self.command.append("--follow")
         return self
 
     @_logger
@@ -639,7 +641,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--hidden')
+        self.command.append("--hidden")
         return self
 
     @_logger
@@ -671,7 +673,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--ignore-case')
+        self.command.append("--ignore-case")
         return self
 
     @_logger
@@ -709,7 +711,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--ignore-file-case-insensitive')
+        self.command.append("--ignore-file-case-insensitive")
         return self
 
     @_logger
@@ -720,7 +722,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--invert-match')
+        self.command.append("--invert-match")
         return self
 
     @_logger
@@ -774,7 +776,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--json')
+        self.command.append("--json")
         return self
 
     @_logger
@@ -797,7 +799,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--line-buffered')
+        self.command.append("--line-buffered")
         return self
 
     @_logger
@@ -809,7 +811,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--line-number')
+        self.command.append("--line-number")
         return self
 
     @_logger
@@ -825,7 +827,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--line-regexp')
+        self.command.append("--line-regexp")
         return self
 
     @_logger
@@ -841,7 +843,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append(f'--max-columns {num}')
+        self.command.append(f"--max-columns {num}")
         return self
 
     @_logger
@@ -861,7 +863,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--max-columns-preview')
+        self.command.append("--max-columns-preview")
         return self
 
     @_logger
@@ -874,7 +876,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append(f'--max-count {num}')
+        self.command.append(f"--max-count {num}")
         return self
 
     @_logger
@@ -893,7 +895,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append(f'--max-depth {num}')
+        self.command.append(f"--max-depth {num}")
         return self
 
     @_logger
@@ -934,7 +936,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--mmap')
+        self.command.append("--mmap")
         return self
 
     @_logger
@@ -984,7 +986,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--multiline')
+        self.command.append("--multiline")
         return self
 
     @_logger
@@ -1013,7 +1015,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--multiline-dotall')
+        self.command.append("--multiline-dotall")
         return self
 
     @_logger
@@ -1029,7 +1031,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--no-config')
+        self.command.append("--no-config")
         return self
 
     @_logger
@@ -1044,7 +1046,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--no-filename')
+        self.command.append("--no-filename")
         return self
 
     @_logger
@@ -1060,7 +1062,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--no-heading')
+        self.command.append("--no-heading")
         return self
 
     @_logger
@@ -1074,7 +1076,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--no-ignore')
+        self.command.append("--no-ignore")
         return self
 
     @_logger
@@ -1087,7 +1089,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--no-ignore-dot')
+        self.command.append("--no-ignore-dot")
         return self
 
     @_logger
@@ -1102,7 +1104,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--no-ignore-global')
+        self.command.append("--no-ignore-global")
         return self
 
     @_logger
@@ -1116,7 +1118,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--no-ignore-messages')
+        self.command.append("--no-ignore-messages")
         return self
 
     @_logger
@@ -1130,7 +1132,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--no-ignore-parent')
+        self.command.append("--no-ignore-parent")
         return self
 
     @_logger
@@ -1145,7 +1147,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--no-ignore-vcs')
+        self.command.append("--no-ignore-vcs")
         return self
 
     @_logger
@@ -1157,7 +1159,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--no-line-number')
+        self.command.append("--no-line-number")
         return self
 
     @_logger
@@ -1172,7 +1174,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--no-messages')
+        self.command.append("--no-messages")
         return self
 
     @_logger
@@ -1185,7 +1187,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--no-mmap')
+        self.command.append("--no-mmap")
         return self
 
     @_logger
@@ -1226,7 +1228,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--no-pcre2-unicode')
+        self.command.append("--no-pcre2-unicode")
         return self
 
     @_logger
@@ -1240,7 +1242,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--null')
+        self.command.append("--null")
         return self
 
     @_logger
@@ -1265,7 +1267,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--null-data')
+        self.command.append("--null-data")
         return self
 
     @_logger
@@ -1287,7 +1289,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--one-file-system')
+        self.command.append("--one-file-system")
         return self
 
     @_logger
@@ -1299,7 +1301,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--only-matching')
+        self.command.append("--only-matching")
         return self
 
     @_logger
@@ -1317,7 +1319,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--passthru')
+        self.command.append("--passthru")
         return self
 
     @_logger
@@ -1357,7 +1359,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--pcre2')
+        self.command.append("--pcre2")
         return self
 
     @_logger
@@ -1371,8 +1373,8 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.regex_pattern = ''
-        self.command.append('--pcre2-version')
+        self.regex_pattern = ""
+        self.command.append("--pcre2-version")
         return self
 
     @_logger
@@ -1478,7 +1480,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--pretty')
+        self.command.append("--pretty")
         return self
 
     @_logger
@@ -1495,7 +1497,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--quite')
+        self.command.append("--quite")
         return self
 
     @_logger
@@ -1538,7 +1540,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.regex_pattern = ''
+        self.regex_pattern = ""
         self.command.append(f'--regexp "{pattern}"')
         return self
 
@@ -1563,7 +1565,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append(f'--replace \'{replacement_text}\'')
+        self.command.append(f"--replace '{replacement_text}'")
         return self
 
     @_logger
@@ -1578,7 +1580,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--search-zip')
+        self.command.append("--search-zip")
         return self
 
     @_logger
@@ -1592,7 +1594,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--smart-case')
+        self.command.append("--smart-case")
         return self
 
     @_logger
@@ -1676,7 +1678,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--stats')
+        self.command.append("--stats")
         return self
 
     @_logger
@@ -1701,7 +1703,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--text')
+        self.command.append("--text")
         return self
 
     @_logger
@@ -1716,7 +1718,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append(f'--threads {num}')
+        self.command.append(f"--threads {num}")
         return self
 
     @_logger
@@ -1730,7 +1732,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--trim')
+        self.command.append("--trim")
         return self
 
     @_logger
@@ -1800,7 +1802,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--type-clear')
+        self.command.append("--type-clear")
         return self
 
     @_logger
@@ -1811,9 +1813,9 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.regex_pattern = ''
-        self.path = ''
-        self.command.append('--type-list')
+        self.regex_pattern = ""
+        self.path = ""
+        self.command.append("--type-list")
         return self
 
     @_logger
@@ -1843,7 +1845,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--unrestricted')
+        self.command.append("--unrestricted")
         return self
 
     @_logger
@@ -1856,7 +1858,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--vimgrep')
+        self.command.append("--vimgrep")
         return self
 
     @_logger
@@ -1873,7 +1875,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--with-filename')
+        self.command.append("--with-filename")
         return self
 
     @_logger
@@ -1888,5 +1890,84 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--word-regexp')
+        self.command.append("--word-regexp")
+        return self
+
+    ### Options for version 12 of ripgrep
+    @_logger
+    def no_unicode(self) -> Ripgrepy:
+        """
+        By default, ripgrep will enable "Unicode mode" in all of its
+        regexes. This has a number of consequences:
+
+        ·   . will only match valid UTF-8 encoded scalar values.
+
+        ·   Classes like \w, \s, \d are all Unicode aware and much bigger
+            than their ASCII only versions.
+
+        ·   Case insensitive matching will use Unicode case folding.
+
+        ·   A large array of classes like \p{Emoji} are available.
+
+        ·   Word boundaries (\\b and \B) use the Unicode definition of a
+            word character.
+
+            In some cases it can be desirable to turn these things off. The
+            --no-unicode flag will do exactly that.
+
+            For PCRE2 specifically, Unicode mode represents a critical
+            trade off in the user experience of ripgrep. In particular,
+            unlike the default regex engine, PCRE2 does not support the
+            ability to search possibly invalid UTF-8 with Unicode features
+            enabled. Instead, PCRE2 requires that everything it searches
+            when Unicode mode is enabled is valid UTF-8. (Or valid
+            UTF-16/UTF-32, but for the purposes of ripgrep, we only discuss
+            UTF-8.) This means that if you have PCRE2's Unicode mode
+            enabled and you attempt to search invalid UTF-8, then the
+            search for that file will halt and print an error. For this
+            reason, when PCRE2's Unicode mode is enabled, ripgrep will
+            automatically "fix" invalid UTF-8 sequences by replacing them
+            with the Unicode replacement codepoint. This penalty does not
+            occur when using the default regex engine.
+
+            If you would rather see the encoding errors surfaced by PCRE2
+            when Unicode mode is enabled, then pass the --no-encoding flag
+            to disable all transcoding.
+
+            The --no-unicode flag can be disabled with --unicode. Note that
+            --no-pcre2-unicode and --pcre2-unicode are aliases for
+            --no-unicode and --unicode, respectively.
+
+        :return: self
+        :rtype: Ripgrepy
+        """
+        self.command.append("--no-unicode")
+        return self
+
+    @_logger
+    def engine(self, engine: str) -> Ripgrepy:
+        """
+        Specify which regular expression engine to use. When you choose a
+        regex engine, it applies that choice for every regex provided to
+        ripgrep (e.g., via multiple -e/--regexp or -f/--file flags).
+
+        Accepted values are default, pcre2, or auto.
+
+        The default value is default, which is the fastest and should be
+        good for most use cases. The pcre2 engine is generally useful when
+        you want to use features such as look-around or backreferences.
+        auto will dynamically choose between supported regex engines
+        depending on the features used in a pattern on a best effort basis.
+
+        Note that the pcre2 engine is an optional ripgrep feature. If PCRE2
+        wasn't including in your build of ripgrep, then using this flag
+        will result in ripgrep printing an error message and exiting.
+
+        This overrides previous uses of --pcre2 and --auto-hybrid-regex
+        flags.
+
+        :return: self
+        :rtype: Ripgrepy
+        """
+        self.command.append(f"--engine {engine}")
         return self
