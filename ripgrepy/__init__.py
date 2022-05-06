@@ -1,7 +1,7 @@
 from __future__ import annotations
 import os
 from shutil import which
-from subprocess import getoutput
+import subprocess
 from json import dumps, loads
 from functools import wraps
 from timeit import default_timer
@@ -122,7 +122,7 @@ class Ripgrepy(object):
     """
 
     def __init__(self, regex_pattern: str, path: str, rg_path: str = "rg"):
-        self.regex_pattern = f'"{regex_pattern}"'
+        self.regex_pattern = regex_pattern
         self.path = os.path.expanduser(path)
         self._output = None
         self._rg_path = rg_path
@@ -214,8 +214,11 @@ class Ripgrepy(object):
         """
         self.command.append(self.regex_pattern)
         self.command.append(self.path)
-        self.command = " ".join(self.command)
-        self._output = getoutput(self.command)
+        output = subprocess.run(self.command, capture_output=True)
+        if output.returncode == 0:
+            self._output = output.stdout.decode('UTF-8')
+        else:
+            self._output = output.stderr.decode('UTF-8')
         return RipGrepOut(self._output, self.command)
 
     @_logger
@@ -240,7 +243,8 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append(f"--after-context {number}")
+        self.command.append("--after-context")
+        self.command.append(number)
         return self
 
     @_logger
@@ -255,7 +259,8 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append(f"--before-context {number}")
+        self.command.append("--before-context")
+        self.command.append(number)
         return self
 
     @_logger
@@ -274,7 +279,8 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append(f"--context {number}")
+        self.command.append("--context")
+        self.command.append(number)
         return self
 
     @_logger
@@ -489,7 +495,8 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append(f'--dfa-size-limit "{num_suffix}"')
+        self.command.append('--dfa-size-limit')
+        self.command.append(num_suffix)
         return self
 
     @_logger
@@ -518,7 +525,8 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append(f'--encoding "{encoding}"')
+        self.command.append('--encoding')
+        self.command.append(encoding)
         return self
 
     @_logger
@@ -538,7 +546,8 @@ class Ripgrepy(object):
         :return: [description]
         :rtype: Ripgrepy
         """
-        self.command.append(f'--file "{pattern}"')
+        self.command.append('--file')
+        self.command.append(pattern)
         return self
 
     @_logger
@@ -625,7 +634,8 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append(f'--glob "{glob_pattern}"')
+        self.command.append('--glob')
+        self.command.append(glob_pattern)
         return self
 
     @_logger
@@ -658,7 +668,8 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append(f'--iglob "{glob_pattern}"')
+        self.command.append('--iglob')
+        self.command.append(glob_pattern)
         return self
 
     @_logger
@@ -695,7 +706,8 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append(f'--ignore-file "{path}"')
+        self.command.append('--ignore-file')
+        self.command.append(path)
         return self
 
     @_logger
@@ -843,7 +855,8 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append(f"--max-columns {num}")
+        self.command.append("--max-columns")
+        self.command.append(num)
         return self
 
     @_logger
@@ -876,7 +889,8 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append(f"--max-count {num}")
+        self.command.append("--max-count")
+        self.command.append(num)
         return self
 
     @_logger
@@ -895,7 +909,8 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append(f"--max-depth {num}")
+        self.command.append("--max-depth")
+        self.command.append(num)
         return self
 
     @_logger
@@ -915,7 +930,8 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append(f'--max-filesize "{num_suffix}"')
+        self.command.append('--max-filesize')
+        self.command.append(num_suffix)
         return self
 
     @_logger
@@ -1336,7 +1352,8 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append(f'--path-separator "{separator}"')
+        self.command.append('--path-separator')
+        self.command.append(separator)
         return self
 
     @_logger
@@ -1432,7 +1449,8 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append(f'--pre "{command}"')
+        self.command.append('--pre')
+        self.command.append(command)
         return self
 
     @_logger
@@ -1466,7 +1484,8 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append(f'--pre-glob "{glob}"')
+        self.command.append('--pre-glob')
+        self.command.append(glob)
         return self
 
     @_logger
@@ -1514,7 +1533,8 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append(f'--regex-size-limit "{num_suffix}"')
+        self.command.append('--regex-size-limit')
+        self.command.append(num_suffix)
         return self
 
     @_logger
@@ -1541,7 +1561,8 @@ class Ripgrepy(object):
         :rtype: Ripgrepy
         """
         self.regex_pattern = ""
-        self.command.append(f'--regexp "{pattern}"')
+        self.command.append('--regexp')
+        self.command.append(pattern)
         return self
 
     @_logger
@@ -1565,7 +1586,8 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append(f"--replace '{replacement_text}'")
+        self.command.append("--replace")
+        self.command.append(replacement_text)
         return self
 
     @_logger
@@ -1625,7 +1647,8 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append(f'--sort "{sort_by}"')
+        self.command.append('--sort')
+        self.command.append(sort_by)
         return self
 
     @_logger
@@ -1656,7 +1679,8 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append(f'--sortr "{sort_by}"')
+        self.command.append('--sortr')
+        self.command.append(sort_by)
         return self
 
     @_logger
@@ -1718,7 +1742,8 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append(f"--threads {num}")
+        self.command.append("--threads")
+        self.command.append(num)
         return self
 
     @_logger
@@ -1746,7 +1771,8 @@ class Ripgrepy(object):
         :return: [description]
         :rtype: Ripgrepy
         """
-        self.command.append(f'--type "{type_pattern}"')
+        self.command.append('--type')
+        self.command.append(type_pattern)
         return self
 
     @_logger
@@ -1786,7 +1812,8 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append(f'--type-add "{type_spec}"')
+        self.command.append('--type-add')
+        self.command.append(type_spec)
         return self
 
     @_logger
@@ -1829,7 +1856,8 @@ class Ripgrepy(object):
         :return: [description]
         :rtype: Ripgrepy
         """
-        self.command.append(f'--type-not "{type_pattern}"')
+        self.command.append('--type-not')
+        self.command.append(type_pattern)
         return self
 
     @_logger
@@ -1969,5 +1997,6 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append(f"--engine {engine}")
+        self.command.append("--engine")
+        self.command.append(engine)
         return self
