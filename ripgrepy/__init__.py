@@ -179,8 +179,8 @@ class Ripgrepy(object):
         self.P = self.pcre2
         #: Short syntax for pretty
         self.p = self.pretty
-        #: Short syntax for quite
-        self.q = self.quite
+        #: Short syntax for quiet
+        self.q = self.quiet
         #: Short syntax for regexp
         self.e = self.regexp
         #: Short syntax for replace
@@ -1503,7 +1503,7 @@ class Ripgrepy(object):
         return self
 
     @_logger
-    def quite(self) -> Ripgrepy:
+    def quiet(self) -> Ripgrepy:
         """
         Do not print anything to stdout. If a match is found in a file,
         then ripgrep will stop searching. This is useful when ripgrep is
@@ -1516,7 +1516,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append("--quite")
+        self.command.append("--quiet")
         return self
 
     @_logger
