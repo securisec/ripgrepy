@@ -1,7 +1,8 @@
 from ripgrepy import Ripgrepy
 
-rg = Ripgrepy('lol', '.').json().run()
+def test_base():
+    rg = Ripgrepy('lol', '.').context(1).json().run()
 
-print(rg.as_string)
-print(rg.as_dict)
-print(rg.as_json)
+    print(rg.as_string)
+    print(rg.as_dict)
+    print(rg.as_json)

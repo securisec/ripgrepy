@@ -5,10 +5,8 @@ import subprocess
 from json import dumps, loads
 from functools import wraps
 from timeit import default_timer
-from pkg_resources import get_distribution
 import logging
 
-__version__ = get_distribution("ripgrepy").version
 
 
 def _logger(func):
@@ -82,7 +80,7 @@ class RipGrepOut(object):
         :rtype: str
         """
         if "--json" not in self.command:
-            raise TypeError("To use as_dict, use the json() method")
+            raise TypeError("To use as_json, use the json() method")
         out = self._output.splitlines()
         holder = []
         for line in out:
@@ -205,12 +203,12 @@ class Ripgrepy(object):
         self.run_rg = self.run
 
     @_logger
-    def run(self) -> RipgrepOut:
+    def run(self) -> RipGrepOut:
         """
         Returns an instace of the Ripgrepy object
 
         :return: self
-        :rtype: RipgrepOut
+        :rtype: RipGrepOut
         """
         self.command.append(self.regex_pattern)
         self.command.append(self.path)
@@ -244,7 +242,7 @@ class Ripgrepy(object):
         :rtype: Ripgrepy
         """
         self.command.append("--after-context")
-        self.command.append(number)
+        self.command.append(str(number))
         return self
 
     @_logger
@@ -260,7 +258,7 @@ class Ripgrepy(object):
         :rtype: Ripgrepy
         """
         self.command.append("--before-context")
-        self.command.append(number)
+        self.command.append(str(number))
         return self
 
     @_logger
@@ -280,7 +278,7 @@ class Ripgrepy(object):
         :rtype: Ripgrepy
         """
         self.command.append("--context")
-        self.command.append(number)
+        self.command.append(str(number))
         return self
 
     @_logger
@@ -496,7 +494,7 @@ class Ripgrepy(object):
         :rtype: Ripgrepy
         """
         self.command.append('--dfa-size-limit')
-        self.command.append(num_suffix)
+        self.command.append(str(num_suffix))
         return self
 
     @_logger
@@ -856,7 +854,7 @@ class Ripgrepy(object):
         :rtype: Ripgrepy
         """
         self.command.append("--max-columns")
-        self.command.append(num)
+        self.command.append(str(num))
         return self
 
     @_logger
@@ -890,7 +888,7 @@ class Ripgrepy(object):
         :rtype: Ripgrepy
         """
         self.command.append("--max-count")
-        self.command.append(num)
+        self.command.append(str(num))
         return self
 
     @_logger
@@ -910,7 +908,7 @@ class Ripgrepy(object):
         :rtype: Ripgrepy
         """
         self.command.append("--max-depth")
-        self.command.append(num)
+        self.command.append(str(num))
         return self
 
     @_logger
@@ -1743,7 +1741,7 @@ class Ripgrepy(object):
         :rtype: Ripgrepy
         """
         self.command.append("--threads")
-        self.command.append(num)
+        self.command.append(str(num))
         return self
 
     @_logger
