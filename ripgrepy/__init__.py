@@ -102,6 +102,27 @@ class RipGrepOut(object):
 
     def __repr__(self):
         return str(self._output)
+    
+    @property
+    @_logger
+    def files_list(self) -> list:
+        """
+        Returns an array of the paths listed when using methods files(),
+        files_with_matches() (alias l()) or files_without_match().
+        
+        Can be used with count_matches(), but the result is then a list
+        of [file/path:]count (see the methods documentation for details).
+
+        :return: Array of file paths
+        :rtype: list
+        """
+        file_args = ["--files", "--files-with-matches",
+                     "--files-without-matches", "--count-matches"]
+        if not any(arg in self.command for arg in file_args):
+            raise TypeError("files_list only available when using one of "
+                            "the files...() or count...() methods")
+        sep = "\0" if "--null" in self.command else "\n"
+        return self._output.split(sep)[:-1]
 
 
 class Ripgrepy(object):
