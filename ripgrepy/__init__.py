@@ -119,9 +119,9 @@ class Ripgrepy(object):
     :raises RipGrepNotFound: Error if path to ripgrep could not be resolved
     """
 
-    def __init__(self, regex_pattern: str, path: str, rg_path: str = "rg"):
+    def __init__(self, regex_pattern: str = None, path: str = None, rg_path: str = "rg"):
         self.regex_pattern = regex_pattern
-        self.path = os.path.expanduser(path)
+        self.path = path and os.path.expanduser(path)
         self._output = None
         self._rg_path = rg_path
         #: The ripgreg command that will be executed
@@ -210,9 +210,9 @@ class Ripgrepy(object):
         :return: self
         :rtype: RipGrepOut
         """
-        if self.regex_pattern:
+        if self.regex_pattern is not None:
             self.command.append(self.regex_pattern)
-        if self.path:
+        if self.path is not None:
             self.command.append(self.path)
         output = subprocess.run(self.command, capture_output=True)
         if output.returncode == 0:
@@ -560,7 +560,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.regex_pattern = ""
+        self.regex_pattern = None
         self.command.append("--files")
         return self
 
@@ -1391,7 +1391,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.regex_pattern = ""
+        self.regex_pattern = None
         self.command.append("--pcre2-version")
         return self
 
@@ -1561,7 +1561,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.regex_pattern = ""
+        self.regex_pattern = None
         self.command.append('--regexp')
         self.command.append(pattern)
         return self
@@ -1841,8 +1841,8 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.regex_pattern = ""
-        self.path = ""
+        self.regex_pattern = None
+        self.path = None
         self.command.append("--type-list")
         return self
 
