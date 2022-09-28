@@ -210,8 +210,10 @@ class Ripgrepy(object):
         :return: self
         :rtype: RipGrepOut
         """
-        self.command.append(self.regex_pattern)
-        self.command.append(self.path)
+        if self.regex_pattern:
+            self.command.append(self.regex_pattern)
+        if self.path:
+            self.command.append(self.path)
         output = subprocess.run(self.command, capture_output=True)
         if output.returncode == 0:
             self._output = output.stdout.decode('UTF-8')
@@ -558,6 +560,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
+        self.regex_pattern = ""
         self.command.append("--files")
         return self
 
