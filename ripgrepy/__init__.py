@@ -61,9 +61,9 @@ class RipGrepOut(object):
         """
         if "--json" not in self.command:
             raise TypeError("To use as_dict, use the json() method")
-        out = self._output.splitlines()
+        out = self._output.split('\n')
         holder = []
-        for line in out:
+        for line in out[:-1]:
             data = loads(line)
             if data["type"] == "match":
                 holder.append(data)
@@ -81,9 +81,9 @@ class RipGrepOut(object):
         """
         if "--json" not in self.command:
             raise TypeError("To use as_json, use the json() method")
-        out = self._output.splitlines()
+        out = self._output.split('\n')
         holder = []
-        for line in out:
+        for line in out[:-1]:
             data = loads(line)
             if data["type"] == "match":
                 holder.append(data)
