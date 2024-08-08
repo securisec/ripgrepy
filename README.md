@@ -14,7 +14,7 @@ For complete usage and details, refer to the docs at
 
 [Readthedocs](http://ripgrepy.readthedocs.io/en/latest/)
 
-## Instal
+## Install
 Use pip to install
 ```
 pip install ripgrepy
