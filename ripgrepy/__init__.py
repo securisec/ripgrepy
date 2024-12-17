@@ -6,7 +6,7 @@ from json import dumps, loads
 from functools import wraps
 from timeit import default_timer
 import logging
-
+from typing import Union, Any, List
 
 
 def _logger(func):
@@ -35,7 +35,7 @@ class RipGrepNotFound(Exception):
 
 
 class RipGrepOut(object):
-    def __init__(self, _output, command):
+    def __init__(self, _output: Any, command: List[str]):
         self._output = _output
         self.command = command
 
@@ -122,10 +122,10 @@ class Ripgrepy(object):
     def __init__(self, regex_pattern: str, path: str, rg_path: str = "rg"):
         self.regex_pattern = regex_pattern
         self.path = os.path.expanduser(path)
-        self._output = None
+        self._output: Union[str, None] = None
         self._rg_path = rg_path
         #: The ripgreg command that will be executed
-        self.command = [self._rg_path]
+        self.command: List[str] = [self._rg_path]
 
         if which(self._rg_path) is None:
             raise RipGrepNotFound("ripgrep not found")
@@ -214,20 +214,10 @@ class Ripgrepy(object):
         self.command.append(self.path)
         output = subprocess.run(self.command, capture_output=True)
         if output.returncode == 0:
-            self._output = output.stdout.decode('UTF-8')
+            self._output = output.stdout.decode("UTF-8")
         else:
-            self._output = output.stderr.decode('UTF-8')
+            self._output = output.stderr.decode("UTF-8")
         return RipGrepOut(self._output, self.command)
-
-    @_logger
-    def error_msg(self) -> Ripgrepy:
-        """
-        Returns any stderr that was generated
-
-        :return: String of error
-        :rtype: Ripgrepy
-        """
-        return self.error
 
     @_logger
     def after_context(self, number: int) -> Ripgrepy:
@@ -493,7 +483,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--dfa-size-limit')
+        self.command.append("--dfa-size-limit")
         self.command.append(str(num_suffix))
         return self
 
@@ -523,7 +513,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--encoding')
+        self.command.append("--encoding")
         self.command.append(encoding)
         return self
 
@@ -544,7 +534,7 @@ class Ripgrepy(object):
         :return: [description]
         :rtype: Ripgrepy
         """
-        self.command.append('--file')
+        self.command.append("--file")
         self.command.append(pattern)
         return self
 
@@ -632,7 +622,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--glob')
+        self.command.append("--glob")
         self.command.append(glob_pattern)
         return self
 
@@ -666,7 +656,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--iglob')
+        self.command.append("--iglob")
         self.command.append(glob_pattern)
         return self
 
@@ -704,7 +694,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--ignore-file')
+        self.command.append("--ignore-file")
         self.command.append(path)
         return self
 
@@ -928,7 +918,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--max-filesize')
+        self.command.append("--max-filesize")
         self.command.append(num_suffix)
         return self
 
@@ -1350,7 +1340,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--path-separator')
+        self.command.append("--path-separator")
         self.command.append(separator)
         return self
 
@@ -1447,7 +1437,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--pre')
+        self.command.append("--pre")
         self.command.append(command)
         return self
 
@@ -1482,7 +1472,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--pre-glob')
+        self.command.append("--pre-glob")
         self.command.append(glob)
         return self
 
@@ -1531,7 +1521,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--regex-size-limit')
+        self.command.append("--regex-size-limit")
         self.command.append(num_suffix)
         return self
 
@@ -1559,7 +1549,7 @@ class Ripgrepy(object):
         :rtype: Ripgrepy
         """
         self.regex_pattern = ""
-        self.command.append('--regexp')
+        self.command.append("--regexp")
         self.command.append(pattern)
         return self
 
@@ -1645,7 +1635,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--sort')
+        self.command.append("--sort")
         self.command.append(sort_by)
         return self
 
@@ -1677,7 +1667,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--sortr')
+        self.command.append("--sortr")
         self.command.append(sort_by)
         return self
 
@@ -1769,7 +1759,7 @@ class Ripgrepy(object):
         :return: [description]
         :rtype: Ripgrepy
         """
-        self.command.append('--type')
+        self.command.append("--type")
         self.command.append(type_pattern)
         return self
 
@@ -1810,7 +1800,7 @@ class Ripgrepy(object):
         :return: self
         :rtype: Ripgrepy
         """
-        self.command.append('--type-add')
+        self.command.append("--type-add")
         self.command.append(type_spec)
         return self
 
@@ -1854,7 +1844,7 @@ class Ripgrepy(object):
         :return: [description]
         :rtype: Ripgrepy
         """
-        self.command.append('--type-not')
+        self.command.append("--type-not")
         self.command.append(type_pattern)
         return self
 

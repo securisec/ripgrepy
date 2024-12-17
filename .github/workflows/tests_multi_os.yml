@@ -26,6 +26,13 @@ jobs:
         uses: actions/setup-python@v2.2.1
         with:
           python-version: "3.7"
+      - name: install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install mypy  # Install mypy
+      - name: generate .pyi files using stubgen
+        run: |
+          python -m mypy.stubgen --output ./ --package ripgrepy  # Generate stub files
       - name: build
         run: |
           python setup.py sdist
