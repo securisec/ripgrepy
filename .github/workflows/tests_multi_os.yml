@@ -25,7 +25,7 @@ jobs:
       - name: setup
         uses: actions/setup-python@v2.2.1
         with:
-          python-version: "3.7"
+          python-version: "3.7.16"
       - name: install dependencies
         run: |
           python -m pip install --upgrade pip
