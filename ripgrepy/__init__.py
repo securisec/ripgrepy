@@ -950,11 +950,11 @@ class Ripgrepy(object):
 
         When multiline mode is enabled, ripgrep will lift the restriction
         that a match cannot include a line terminator. For example, when
-        multiline mode is not enabled (the default), then the regex \p{any}
+        multiline mode is not enabled (the default), then the regex `\\p{any}`
         will match any Unicode codepoint other than \\n. Similarly, the
         regex \\n is explicitly forbidden, and if you try to use it, ripgrep
         will return an error. However, when multiline mode is enabled,
-        \p{any} will match any Unicode codepoint, including \\n, and regexes
+        `\\p{any}` will match any Unicode codepoint, including \\n, and regexes
         like \\n are permitted.
 
         An important caveat is that multiline mode does not change the
@@ -1202,8 +1202,8 @@ class Ripgrepy(object):
         not enabled, then this flag has no effect.
 
         When PCRE2's Unicode mode is enabled, several different types of
-        patterns become Unicode aware. This includes \\b, \B, \w, \W, \d,
-        \D, \s and \S. Similarly, the .  meta character will match any
+        patterns become Unicode aware. This includes \\b, \\B, \\w, \\W, \\d,
+        \\D, \\s and \\S. Similarly, the .  meta character will match any
         Unicode codepoint instead of any byte. Caseless matching will also
         use Unicode simple case folding instead of ASCII-only case
         insensitivity.
@@ -1331,7 +1331,27 @@ class Ripgrepy(object):
         """
         Set the path separator to use when printing file paths. This
         defaults to your platform's path separator, which is / on Unix and
-        \ on Windows. This flag is intended for overriding the default when
+        \\ on Windows. This flag is intended for overriding the default when
+        the environment demands it (e.g., cygwin). A path separator is
+        limited to a single byte.
+
+        :param separator: separator
+        :type separator: str
+        :return: self
+        :rtype: Ripgrepy
+        """
+        # This method (path_seprator) is a backwards-compatible alias for
+        # `path_separator`, as the `path_separator` method used to contain a typo.
+        self.command.append("--path-separator")
+        self.command.append(separator)
+        return self
+    
+    @_logger
+    def path_separator(self, separator: str) -> Ripgrepy:
+        """
+        Set the path separator to use when printing file paths. This
+        defaults to your platform's path separator, which is / on Unix and
+        \\ on Windows. This flag is intended for overriding the default when
         the environment demands it (e.g., cygwin). A path separator is
         limited to a single byte.
 
@@ -1458,7 +1478,7 @@ class Ripgrepy(object):
         >>>    #!/bin/sh
         >>>    pdftotext "$1" -
 
-        then it is possible to use --pre pre-pdftotext --pre-glob '\*.pdf'
+        then it is possible to use --pre pre-pdftotext --pre-glob '\\*.pdf'
         to make it so ripgrep only executes the pre-pdftotext command on
         files with a .pdf extension.
 
@@ -1918,14 +1938,14 @@ class Ripgrepy(object):
 
         ·   . will only match valid UTF-8 encoded scalar values.
 
-        ·   Classes like \w, \s, \d are all Unicode aware and much bigger
+        ·   Classes like \\w, \\s, \\d are all Unicode aware and much bigger
             than their ASCII only versions.
 
         ·   Case insensitive matching will use Unicode case folding.
 
         ·   A large array of classes like \p{Emoji} are available.
 
-        ·   Word boundaries (\\b and \B) use the Unicode definition of a
+        ·   Word boundaries (\\b and \\B) use the Unicode definition of a
             word character.
 
             In some cases it can be desirable to turn these things off. The
