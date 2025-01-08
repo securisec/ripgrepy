@@ -1943,7 +1943,7 @@ class Ripgrepy(object):
 
         ·   Case insensitive matching will use Unicode case folding.
 
-        ·   A large array of classes like \p{Emoji} are available.
+        ·   A large array of classes like \\p{Emoji} are available.
 
         ·   Word boundaries (\\b and \\B) use the Unicode definition of a
             word character.
