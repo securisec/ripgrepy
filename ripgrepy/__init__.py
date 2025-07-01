@@ -61,9 +61,11 @@ class RipGrepOut(object):
         """
         if "--json" not in self.command:
             raise TypeError("To use as_dict, use the json() method")
-        out = self._output.splitlines()
+        out = self._output.split("\n")
         holder = []
         for line in out:
+            if not line.strip():
+                continue
             data = loads(line)
             if data["type"] == "match":
                 holder.append(data)
@@ -81,9 +83,11 @@ class RipGrepOut(object):
         """
         if "--json" not in self.command:
             raise TypeError("To use as_json, use the json() method")
-        out = self._output.splitlines()
+        out = self._output.split("\n")
         holder = []
         for line in out:
+            if not line.strip():
+                continue
             data = loads(line)
             if data["type"] == "match":
                 holder.append(data)
@@ -203,20 +207,33 @@ class Ripgrepy(object):
         self.run_rg = self.run
 
     @_logger
-    def run(self) -> RipGrepOut:
+    def run(self, universal_newlines=True) -> RipGrepOut:
         """
         Returns an instace of the Ripgrepy object
+
+        Args:
+            universal_newlines (bool, optional): Whether to use universal newlines. Defaults to True.
 
         :return: self
         :rtype: RipGrepOut
         """
         self.command.append(self.regex_pattern)
         self.command.append(self.path)
-        output = subprocess.run(self.command, capture_output=True)
+        output = subprocess.run(
+            self.command, capture_output=True, universal_newlines=universal_newlines
+        )
         if output.returncode == 0:
-            self._output = output.stdout.decode("UTF-8")
+            self._output = (
+                output.stdout
+                if isinstance(output.stdout, str)
+                else output.stdout.decode("utf-8")
+            )
         else:
-            self._output = output.stderr.decode("UTF-8")
+            self._output = (
+                output.stderr
+                if isinstance(output.stderr, str)
+                else output.stderr.decode("utf-8")
+            )
         return RipGrepOut(self._output, self.command)
 
     @_logger
@@ -1345,7 +1362,7 @@ class Ripgrepy(object):
         self.command.append("--path-separator")
         self.command.append(separator)
         return self
-    
+
     @_logger
     def path_separator(self, separator: str) -> Ripgrepy:
         """
