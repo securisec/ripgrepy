@@ -220,20 +220,13 @@ class Ripgrepy(object):
         self.command.append(self.regex_pattern)
         self.command.append(self.path)
         output = subprocess.run(
-            self.command, capture_output=True, universal_newlines=universal_newlines
+            self.command, capture_output=True, universal_newlines=universal_newlines,
+            encoding='utf-8', errors='replace'
         )
         if output.returncode == 0:
-            self._output = (
-                output.stdout
-                if isinstance(output.stdout, str)
-                else output.stdout.decode("utf-8")
-            )
+            self._output = output.stdout
         else:
-            self._output = (
-                output.stderr
-                if isinstance(output.stderr, str)
-                else output.stderr.decode("utf-8")
-            )
+            self._output = output.stderr
         return RipGrepOut(self._output, self.command)
 
     @_logger
